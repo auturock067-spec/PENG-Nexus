@@ -20,6 +20,9 @@ jobs:
         run: npx playwright install --with-deps chromium
       - name: Test portal at 320/390/768/1440 and capture screenshots
         run: node e2e/portal.browser.mjs
+      - name: Check public interactive preview from pinned commit
+        continue-on-error: true
+        run: node e2e/online-preview.mjs
       - name: Upload portal browser evidence
         if: always()
         uses: actions/upload-artifact@v4
