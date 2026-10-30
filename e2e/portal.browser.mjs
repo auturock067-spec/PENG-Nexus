@@ -43,6 +43,8 @@ try{
      await page.locator('[data-filter="industrial"]').click();
      assert.equal(await page.locator('[data-site]:visible').count(),3);
      await page.locator('[data-filter="all"]').click();
+     await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));
+     await page.waitForTimeout(200);
      await page.screenshot({path:join(artifacts,'portal-390-zh.png'),fullPage:true});
      await page.locator('[data-lang="en"]').click();
      await page.locator('#site-search').fill('Plumbing');
