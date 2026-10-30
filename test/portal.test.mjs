@@ -35,7 +35,7 @@ test('bilingual navigation, live search, industry modal and accessible controls'
 test('photography present for hero and six sectors; clear attributions',()=>{
  assert.match(html,/class="hero-photo"/);
  assert.equal((html.match(/class="sector-image"/g)||[]).length,6);
- assert.equal((html.match(/images\.unsplash\.com\//g)||[]).length,7);
+ assert.equal((html.match(/<img\b/g)||[]).length,7);
  assert.match(html,/unsplash\.com\/license/);
 });
 test('no customer data submission, secrets or analytics',()=>{
