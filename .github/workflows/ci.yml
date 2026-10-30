@@ -20,8 +20,10 @@ jobs:
         run: npx playwright install --with-deps chromium
       - name: Test portal at 320/390/768/1440 and capture screenshots
         run: node e2e/portal.browser.mjs
-      - name: Check public interactive preview from pinned commit
+      - name: Check public interactive preview from PR head commit
         continue-on-error: true
+        env:
+          PREVIEW_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
         run: node e2e/online-preview.mjs
       - name: Upload portal browser evidence
         if: always()
