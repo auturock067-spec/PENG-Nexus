@@ -14,3 +14,16 @@ jobs:
         with:
           node-version: '22'
       - run: npm test
+      - name: Install isolated browser test dependency
+        run: npm install --no-save playwright@1.56.1
+      - name: Install Chromium for visual acceptance
+        run: npx playwright install --with-deps chromium
+      - name: Test portal at 320/390/768/1440 and capture screenshots
+        run: node e2e/portal.browser.mjs
+      - name: Upload portal browser evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nexus-portal-browser-evidence
+          path: artifacts/
+          retention-days: 14
