@@ -36,7 +36,9 @@ try{
    await img.scrollIntoViewIfNeeded();
    await img.evaluate(async el=>{try{await el.decode();}catch{}});
  }
- await page.evaluate(()=>window.scrollTo(0,0));
+ await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));
+ await page.waitForFunction(()=>window.scrollY===0);
+ await page.waitForTimeout(250);
  await page.screenshot({path:join(dest,'online-preview-390-zh.png'),fullPage:true});
  log.imagesLoaded=await page.locator('img').evaluateAll(els=>els.map(x=>({src:x.currentSrc,naturalWidth:x.naturalWidth})));
  log.imagesLoadedCount=log.imagesLoaded.filter(x=>x.naturalWidth>0).length;
