@@ -5,37 +5,46 @@ const read=path=>readFile(new URL(path,import.meta.url),'utf8');
 const [html,js,css,robots]=await Promise.all([
   read('../portal/index.html'),read('../portal/app.js'),read('../portal/styles.css'),read('../portal/robots.txt')
 ]);
-test('six independent industry links are present and unique',()=>{
- const urls=[...html.matchAll(/href="(https:\/\/github\.com\/auturock067-spec\/[^"]+)" target="_blank"/g)].map(m=>m[1]);
- assert.equal(urls.length,6);
- assert.equal(new Set(urls).size,6);
- for(const repo of ['plumbing-source','build-material-hub','appliance-source','tea-source','pet-supply-hub','hair-source'])
-   assert.ok(urls.includes('https://github.com/auturock067-spec/'+repo),repo);
+test('homepage introduces brand, purpose and six distinct industry sectors',()=>{
+ assert.match(html,/ABOUT PENG NEXUS/);
+ assert.match(html,/WELCOME TO PENG NEXUS/);
+ assert.match(html,/OUR INDUSTRIES/);
+ assert.match(html,/OUR DIRECTION/);
+ const entries=[...html.matchAll(/data-site data-sector="[^"]+" data-key="([^"]+)"/g)].map(m=>m[1]);
+ assert.deepEqual(entries,['plumbing','material','appliance','tea','pet','hair']);
+ assert.equal((html.match(/data-detail="/g)||[]).length,6);
 });
-test('default prototype has noindex and crawler block',()=>{
+test('site is a preview and no supplier verification or sales claims are made',()=>{
  assert.match(html,/<meta name="robots" content="noindex,nofollow">/);
  assert.match(robots,/Disallow: \/\s*$/);
- assert.doesNotMatch(html,/<form\b/i);
+ assert.match(html,/not currently verify suppliers/);
+ assert.doesNotMatch(html,/<form[^>]*action=/);
 });
-test('bilingual source and accessible controls',()=>{
+test('bilingual navigation, live search, industry modal and accessible controls',()=>{
  assert.match(html,/<html lang="en">/);
  assert.match(html,/<button[^>]*data-lang="en"[^>]*aria-pressed="true"/);
  assert.match(html,/<button[^>]*data-lang="zh"/);
  assert.match(html,/id="site-search"/);
  assert.match(html,/id="site-count"[^>]*role="status"[^>]*aria-live="polite"/);
- assert.equal((html.match(/data-site data-sector=/g)||[]).length,6);
- assert.match(html,/data-zh="选择你的采购行业"/);
+ assert.match(html,/id="detail-dialog"/);
+ assert.match(html,/data-zh="探索六大专业领域。"/);
  assert.match(js,/document\.documentElement\.lang=/);
  assert.match(js,/\.dataset\.search/);
+ assert.match(js,/\.showModal\(/);
 });
-test('no network submission, secrets, or tracking code',()=>{
+test('photography present for hero and six sectors; clear attributions',()=>{
+ assert.match(html,/class="hero-photo"/);
+ assert.equal((html.match(/class="sector-image"/g)||[]).length,6);
+ assert.equal((html.match(/images\.unsplash\.com\//g)||[]).length,7);
+ assert.match(html,/unsplash\.com\/license/);
+});
+test('no customer data submission, secrets or analytics',()=>{
  assert.doesNotMatch(html+js, /fetch\s*\(|XMLHttpRequest|sendBeacon|gtag\s*\(|api[_-]?key|localStorage|sessionStorage/i);
- assert.match(html,/not currently authenticate suppliers/);
 });
-test('mobile and reduced-motion styles included',()=>{
- assert.match(css,/@media\(max-width:700px\)/);
+test('mobile typography, grids and reduced-motion styles included',()=>{
+ assert.match(css,/@media\(max-width:580px\)/);
  assert.match(css,/grid-template-columns:1fr/);
- assert.match(css, /prefers-reduced-motion:reduce/);
+ assert.match(css,/prefers-reduced-motion:reduce/);
 });
 test('browser script parses without executing',()=>{
  assert.doesNotThrow(()=>new Function(js));
