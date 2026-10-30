@@ -25,3 +25,13 @@ Use the Git integration to connect each independent repository; production branc
 A release of this central project is manually generated into each site's repo; individual sites are independently reviewed and deployed. Updating PENG Nexus does **not** overwrite an existing site automatically.
 
 See `docs/architecture.md`, `docs/content-policy.md` and `schema/site.schema.json`.
+
+## Six-industry network portal (Draft, not deployed)
+A separate bilingual, mobile-first landing page now lives in [`portal/`](portal/README.md). It connects the six independent industry repositories without changing their code or deployment setup:
+- PlumbingSource, BuildMaterialHub, ApplianceSource (Work computer)
+- TeaSource, PetSupplyHub, HairSource (Home laptop)
+
+Features: English/中文 switch, dual-language search and filter, original SVG illustrations, responsive layout, and transparent source-repository links. **These are GitHub repository links, not verified live sites.** The page has no central RFQ intake or transactions, and remains **noindex**.
+
+Review source in `portal/index.html`, `portal/styles.css`, `portal/app.js`. Preview locally with `python -m http.server 8000 --directory portal` and run `npm test`. Hosted browser screenshots, accessibility testing at 320/390/768/1440px and a linked Cloudflare preview remain required before release.
+
